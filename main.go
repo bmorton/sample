@@ -10,7 +10,7 @@ import (
 // This is the example application from https://cli.urfave.org/v2/getting-started/
 func main() {
 	app := &cli.App{
-		Name:  "boom",
+		Name:  "sample",
 		Usage: "make an explosive entrance",
 		Action: func(*cli.Context) error {
 			fmt.Println("boom! I say! v1!")
