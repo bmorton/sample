@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/creativeprojects/go-selfupdate"
@@ -10,7 +11,7 @@ import (
 	"runtime"
 )
 
-const version = "1.0.2"
+const version = "1.0.3"
 
 // This is the example application from https://cli.urfave.org/v2/getting-started/
 func main() {
@@ -38,7 +39,11 @@ var updateCommand = &cli.Command{
 }
 
 func update(version string) error {
-	latest, found, err := selfupdate.DetectLatest("bmorton/sample")
+	updater, _ := selfupdate.NewUpdater(selfupdate.Config{
+		Validator: &selfupdate.ChecksumValidator{UniqueFilename: "checksums.txt"},
+	})
+
+	latest, found, err := updater.DetectLatest(context.Background(), selfupdate.ParseSlug("bmorton/sample"))
 	if err != nil {
 		return fmt.Errorf("error occurred while detecting version: %w", err)
 	}
@@ -55,7 +60,8 @@ func update(version string) error {
 	if err != nil {
 		return errors.New("could not locate executable path")
 	}
-	if err := selfupdate.UpdateTo(latest.AssetURL, latest.AssetName, exe); err != nil {
+
+	if err := updater.UpdateTo(context.Background(), latest, exe); err != nil {
 		return fmt.Errorf("error occurred while updating binary: %w", err)
 	}
 	log.Printf("Successfully updated to version %s", latest.Version())
