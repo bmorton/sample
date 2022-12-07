@@ -10,7 +10,7 @@ import (
 	"runtime"
 )
 
-const version = "1.0.1"
+const version = "1.0.2"
 
 // This is the example application from https://cli.urfave.org/v2/getting-started/
 func main() {
